@@ -1,6 +1,7 @@
 package editor.ui.parts.toolbar;
 
 import editor.logic.interfaces.ToggleListener;
+import editor.ui.parts.toolbar.parts.CustomRadioButton;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,12 +9,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-public class RotateToolButton extends CustomToggleButton {
+public class RotateToolButton extends CustomRadioButton {
     public RotateToolButton() {
         try {
-            Image moveToolImage = ImageIO.read(new File("assets/rotate-tool.png"))
+            Image rotateToolImage = ImageIO.read(new File("assets/rotate-tool.png"))
                     .getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-            setIcon(new ImageIcon(moveToolImage));
+            setIcon(new ImageIcon(rotateToolImage));
         } catch (IOException e) {
             e.printStackTrace();
         }

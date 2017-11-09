@@ -51,6 +51,11 @@ public class ApplicationToolBar extends JToolBar {
         buttonGroup.add(polygonToolButton);
 
         selectMoveToolButton.setSelected(true);
+
+        rootPanel.add(new JSeparator(SwingConstants.VERTICAL));
+
+        SnapToGridToggleButton snapToGridToggleButton = new SnapToGridToggleButton();
+        rootPanel.add(snapToGridToggleButton);
     }
 
     public static Tool getTool() {

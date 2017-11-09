@@ -1,23 +1,20 @@
 package editor.ui.parts.toolbar;
 
 import editor.logic.interfaces.ToggleListener;
-import editor.logic.tools.SelectMoveTool;
-import editor.logic.tools.Tool;
+import editor.ui.parts.toolbar.parts.CustomRadioButton;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-public class SelectMoveToolButton extends CustomToggleButton {
+public class SelectMoveToolButton extends CustomRadioButton {
     public SelectMoveToolButton() {
         try {
-            Image moveToolImage = ImageIO.read(new File("assets/move-tool.png"))
+            Image selectMoveToolImage = ImageIO.read(new File("assets/move-tool.png"))
                     .getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-            setIcon(new ImageIcon(moveToolImage));
+            setIcon(new ImageIcon(selectMoveToolImage));
         } catch (IOException e) {
             e.printStackTrace();
         }
