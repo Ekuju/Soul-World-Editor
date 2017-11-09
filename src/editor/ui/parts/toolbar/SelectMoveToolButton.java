@@ -12,8 +12,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-public class MoveToolButton extends CustomToggleButton {
-    public MoveToolButton() {
+public class SelectMoveToolButton extends CustomToggleButton {
+    public SelectMoveToolButton() {
         try {
             Image moveToolImage = ImageIO.read(new File("assets/move-tool.png"))
                     .getScaledInstance(16, 16, Image.SCALE_SMOOTH);
@@ -26,12 +26,7 @@ public class MoveToolButton extends CustomToggleButton {
             @Override
             public void togglePerformed(boolean value) {
                 if (value) {
-                    ApplicationToolBar.setTool(SelectMoveTool.class);
-                }
-
-                Tool tool = ApplicationToolBar.getTool();
-                if (!value && tool != null && tool.getClass() == SelectMoveTool.class) {
-                    ApplicationToolBar.setTool(null);
+                    ApplicationToolBar.setTool(ApplicationToolBar.TOOL_SELECT_MOVE_TOOL);
                 }
             }
         });

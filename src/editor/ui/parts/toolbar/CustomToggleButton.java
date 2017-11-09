@@ -10,48 +10,31 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class CustomToggleButton extends JButton implements ActionListener, ChangeListener {
+public class CustomToggleButton extends JRadioButton implements ChangeListener {
     private Color normalColor = Color.LIGHT_GRAY;
     private Color toggledColor = Color.GRAY;
     private Color pressedColor = Color.DARK_GRAY;
-
-    private boolean value;
 
     private ArrayList<ToggleListener> toggleListenerList = new ArrayList<ToggleListener>();
 
     public CustomToggleButton() {
         setOpaque(true);
         setBorderPainted(false);
-        setValue(false);
+        setBackground(normalColor);
 
-        super.addActionListener(this);
         addChangeListener(this);
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        setValue(!value);
-    }
-
-    @Override
     public void stateChanged(ChangeEvent e) {
-        if (getModel().isPressed()) {
-            setBackground(pressedColor);
+        if (isSelected()) {
+            setBackground(toggledColor);
+        } else if (!isSelected()) {
+            setBackground(normalColor);
         }
-    }
-
-    public boolean isToggled() {
-        return value;
-    }
-
-    public void setValue(boolean toggled) {
-        value = toggled;
-
-        Color color = value ? toggledColor : normalColor;
-        setBackground(color);
 
         for (ToggleListener toggleListener : toggleListenerList) {
-            toggleListener.togglePerformed(value);
+            toggleListener.togglePerformed(isSelected());
         }
     }
 
