@@ -2,7 +2,7 @@
 
 ### How to Run
 
-1. Run the Application class.
+1. Run the editor.Application class.
 
 ### How to Use
 
