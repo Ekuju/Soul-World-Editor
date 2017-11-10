@@ -1,6 +1,7 @@
 package editor.ui;
 
 import editor.ui.listeners.Listener;
+import editor.ui.parts.content.StageContentSplitter;
 import editor.ui.parts.menu.ApplicationMenuBar;
 import editor.ui.parts.toolbar.ApplicationToolBar;
 
@@ -13,9 +14,18 @@ public class ApplicationFrame extends JFrame {
 
     private ApplicationMenuBar applicationMenuBar;
     private ApplicationToolBar applicationToolBar;
+    private StageContentSplitter stageContentSplitter;
 
     public ApplicationFrame() {
         super("Soul World Editor");
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         BorderLayout borderLayout = new BorderLayout();
         setLayout(borderLayout);
@@ -28,19 +38,14 @@ public class ApplicationFrame extends JFrame {
         addKeyListener(listener);
         addMouseListener(listener);
 
-        // setContentPane(applicationFrame);
-
         applicationMenuBar = new ApplicationMenuBar();
         setJMenuBar(applicationMenuBar);
 
         applicationToolBar = new ApplicationToolBar();
         add(applicationToolBar, BorderLayout.PAGE_START);
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        stageContentSplitter = new StageContentSplitter();
+        add(stageContentSplitter, BorderLayout.CENTER);
 
         setSize(new Dimension(ApplicationFrame.WIDTH, ApplicationFrame.HEIGHT));
         setPreferredSize(new Dimension(ApplicationFrame.WIDTH, ApplicationFrame.HEIGHT));

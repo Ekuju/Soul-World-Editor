@@ -1,4 +1,4 @@
-package editor.ui.parts.toolbar.parts;
+package editor.ui.parts.content.library.buttons.parts;
 
 import editor.logic.interfaces.ToggleListener;
 
@@ -7,17 +7,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.ButtonUI;
 import java.awt.*;
-import java.util.ArrayList;
 
-public class CustomToggleButton extends JToggleButton implements ChangeListener {
+public class CustomButton extends JButton implements ChangeListener {
     private Color normalColor = Color.LIGHT_GRAY;
     private Color toggledColor = Color.GRAY;
 
-    private ArrayList<ToggleListener> toggleListenerList = new ArrayList<ToggleListener>();
-
-    public CustomToggleButton() {
-        super(null, null, false);
-
+    public CustomButton() {
         setBorderPainted(false);
         setHorizontalAlignment(LEADING);
 
@@ -27,22 +22,12 @@ public class CustomToggleButton extends JToggleButton implements ChangeListener 
         addChangeListener(this);
     }
 
-    public void addToggleListener(ToggleListener toggleListener) {
-        toggleListenerList.add(toggleListener);
-    }
-
     @Override
     public void stateChanged(ChangeEvent e) {
-        boolean selected = isSelected();
-
-        if (selected) {
+        if (getModel().isPressed()) {
             setBackground(toggledColor);
-        } else {
+        } else if (!getModel().isPressed()) {
             setBackground(normalColor);
-        }
-
-        for (ToggleListener toggleListener : toggleListenerList) {
-            toggleListener.togglePerformed(selected);
         }
     }
 

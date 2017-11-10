@@ -19,6 +19,8 @@ public class ScaleToolButton extends CustomRadioButton {
             e.printStackTrace();
         }
 
+        setToolTipText("Scale Tool");
+
         addToggleListener(new ToggleListener() {
             @Override
             public void togglePerformed(boolean value) {

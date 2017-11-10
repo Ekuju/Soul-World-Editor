@@ -19,6 +19,8 @@ public class RotateToolButton extends CustomRadioButton {
             e.printStackTrace();
         }
 
+        setToolTipText("Rotate Tool");
+
         addToggleListener(new ToggleListener() {
             @Override
             public void togglePerformed(boolean value) {

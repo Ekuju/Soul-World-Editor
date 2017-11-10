@@ -19,6 +19,8 @@ public class PolygonToolButton extends CustomRadioButton {
             e.printStackTrace();
         }
 
+        setToolTipText("Polygon Tool");
+
         addToggleListener(new ToggleListener() {
             @Override
             public void togglePerformed(boolean value) {

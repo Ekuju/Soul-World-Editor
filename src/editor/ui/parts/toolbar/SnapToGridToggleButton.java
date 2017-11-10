@@ -19,10 +19,13 @@ public class SnapToGridToggleButton extends CustomToggleButton {
                     .getScaledInstance(16, 16, Image.SCALE_SMOOTH);
 
             setIcon(new ImageIcon(gridNoSnapImage));
-            setSelectedIcon(new ImageIcon(gridSnapImage));
+            // setPressedIcon(new ImageIcon(gridNoSnapImage));
+            // setSelectedIcon(new ImageIcon(gridSnapImage));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        setToolTipText("Snap to Grid");
 
         addToggleListener(new ToggleListener() {
             @Override

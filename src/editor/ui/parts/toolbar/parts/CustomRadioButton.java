@@ -23,20 +23,21 @@ public class CustomRadioButton extends JRadioButton implements ChangeListener {
         addChangeListener(this);
     }
 
+    public void addToggleListener(ToggleListener toggleListener) {
+        toggleListenerList.add(toggleListener);
+    }
+
     @Override
     public void stateChanged(ChangeEvent e) {
-        if (isSelected()) {
+        boolean selected = isSelected();
+        if (selected) {
             setBackground(toggledColor);
-        } else if (!isSelected()) {
+        } else {
             setBackground(normalColor);
         }
 
         for (ToggleListener toggleListener : toggleListenerList) {
-            toggleListener.togglePerformed(isSelected());
+            toggleListener.togglePerformed(selected);
         }
-    }
-
-    public void addToggleListener(ToggleListener toggleListener) {
-        toggleListenerList.add(toggleListener);
     }
 }

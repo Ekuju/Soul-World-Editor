@@ -19,6 +19,8 @@ public class SelectMoveToolButton extends CustomRadioButton {
             e.printStackTrace();
         }
 
+        setToolTipText("Select Move Tool");
+
         addToggleListener(new ToggleListener() {
             @Override
             public void togglePerformed(boolean value) {
