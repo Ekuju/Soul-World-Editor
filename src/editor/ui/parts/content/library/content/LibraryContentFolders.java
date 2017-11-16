@@ -74,7 +74,7 @@ public class LibraryContentFolders<T extends Asset> extends JTabbedPane {
 
                     alreadyCreatedFolder = true;
                     addFolder(newFolderName);
-                    scanFolder();
+                    scanFolders();
                     alreadyCreatedFolder = false;
 
                     return;
@@ -83,42 +83,19 @@ public class LibraryContentFolders<T extends Asset> extends JTabbedPane {
                 currentSelectedTabIndex = currentIndex;
             }
         });
-
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    scanFolder();
-
-                    try {
-                        Thread.sleep(2000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
     }
 
     public File getActiveFolderLocation() {
         return folderList.get(currentSelectedTabIndex).getFolderLocation();
     }
 
-    public void scanAssets() {
+    public synchronized void scanAssets() {
         for (LibraryContentPane<T> contentPane : folderList) {
             contentPane.scanAssets();
         }
     }
 
-    private void addFolder(String name) {
-        File newFolder = new File(contentFolder, name);
-        boolean success = newFolder.mkdir();
-        if (!success) {
-            System.err.println("Could not create new folder " + name);
-        }
-    }
-
-    private synchronized void scanFolder() {
+    public synchronized void scanFolders() {
         File[] folders = contentFolder.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -205,5 +182,13 @@ public class LibraryContentFolders<T extends Asset> extends JTabbedPane {
         }
 
         setSelectedIndex(currentSelectedTabIndex);
+    }
+
+    private void addFolder(String name) {
+        File newFolder = new File(contentFolder, name);
+        boolean success = newFolder.mkdir();
+        if (!success) {
+            System.err.println("Could not create new folder " + name);
+        }
     }
 }

@@ -52,7 +52,18 @@ public class LibraryContent extends JTabbedPane {
         return imagePane.getActiveFolderLocation();
     }
 
-    public static void scanAssets() {
+    public static synchronized void scanLibrary() {
+        scanFolders();
+        scanAssets();
+    }
+    
+    public static synchronized void scanFolders() {
+        imagePane.scanFolders();
+        staticEntityPane.scanFolders();
+        behavioralEntityPane.scanFolders();
+    }
+    
+    public static synchronized void scanAssets() {
         imagePane.scanAssets();
         staticEntityPane.scanAssets();
         behavioralEntityPane.scanAssets();

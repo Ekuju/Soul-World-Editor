@@ -1,21 +1,14 @@
 package editor.ui.parts.content.library.content.importer;
 
 import editor.Application;
-import editor.logic.types.assets.ImageAsset;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.LibraryContent;
-import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -70,28 +63,40 @@ public class AssetFileImporter extends JFileChooser {
 
         // at this point we know the file we're loading is an acceptable image
         try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            InputStream inputStream = new FileInputStream(selectedFile);
-            DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
-            BufferedImage image = ImageIO.read(dis);
-            inputStream.close();
-            dis.close();
+            // validate the checksums so we know what files we can or can't add
+            ApplicationLibrary.scanForFileChecksums();
+            
+            String checksum = ApplicationLibrary.getChecksum(selectedFile);
+            if (ApplicationLibrary.hasFileChecksum(checksum)) {
+                System.err.println("Image checksum already exists.");
+
+                return;
+            }
+            
+            BufferedImage image = ImageIO.read(new FileInputStream(selectedFile));
             if (image == null) {
                 return;
             }
             
-            byte[] digest = messageDigest.digest();
-            String checksum = new String(digest);
-
-            if (ApplicationLibrary.hasImageChecksum(checksum)) {
-                return;
-            }
+            File newFileLockLocation = new File(LibraryContent.getImageFolderLocation(), "." + name + ".png.lock");
+            FileOutputStream fileOutputStream = new FileOutputStream(newFileLockLocation);
+            fileOutputStream.flush();
+            fileOutputStream.close();
 
             File newFileLocation = new File(LibraryContent.getImageFolderLocation(), name + ".png");
             ImageIO.write(image, "png", newFileLocation);
 
-            LibraryContent.scanAssets();
-        } catch (IOException | NoSuchAlgorithmException e) {
+            // add the checksum because we successfully wrote the image
+            ApplicationLibrary.scanForFileChecksums();
+            
+            boolean success = newFileLockLocation.delete();
+            if (!success) {
+                System.err.println("Could not delete lock file " + newFileLockLocation.getName() + ". Will try to delete it on close.");
+                newFileLockLocation.deleteOnExit();
+            }
+
+            ApplicationLibrary.scanLibrary();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

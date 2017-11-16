@@ -15,8 +15,7 @@ import java.nio.Buffer;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class LibraryContentPane<T extends Asset> extends JScrollPane {
     private LibraryScrollableContent<T> flowingContentPanel;
@@ -25,6 +24,7 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
     private String acceptedExtension;
 
     private Set<String> knownFileNameSet;
+    private Map<String, LibraryEntry<T>> fileNameToLibraryEntryMap;
 
     public LibraryContentPane(File directory, String acceptedExtension) {
         this.directory = directory;
@@ -44,28 +44,14 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
         setViewportView(flowingContentPanel);
 
         knownFileNameSet = new HashSet<String>();
-
-        new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    scanAssets();
-
-                    try {
-                        Thread.sleep(2000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }.start();
+        fileNameToLibraryEntryMap = new HashMap<String, LibraryEntry<T>>();
     }
 
     public File getFolderLocation() {
         return directory;
     }
 
-    public void scanAssets() {
+    public synchronized void scanAssets() {
         File[] files = directory.listFiles(new FileFilter() {
             @Override
             public boolean accept(File pathname) {
@@ -87,12 +73,28 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
             System.err.println("Scanned for files and received null.");
             return;
         }
+        
+        Set<String> existingFileNameSet = new HashSet<String>();
+        for (File file : files) {
+            existingFileNameSet.add(file.getName());
+        }
 
         for (File file : files) {
             String fileName = file.getName();
+            File lockFile = new File(file.getParentFile(), "." + fileName + ".lock");
+            if (lockFile.exists()) {
+                continue;
+            }
 
             if (!knownFileNameSet.contains(fileName)) {
+                knownFileNameSet.add(fileName);
                 addLibraryEntry(getLibraryEntryFromFile(file));
+            }
+        }
+        
+        for (String fileName : new HashSet<String>(knownFileNameSet)) {
+            if (!existingFileNameSet.contains(fileName)) {
+                removeLibraryEntry(fileName);
             }
         }
     }
@@ -113,28 +115,26 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
         try {
             switch (extension) {
                 case "png": {
-                    MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-                    InputStream inputStream = new FileInputStream(file);
-                    DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
-                    BufferedImage image = ImageIO.read(dis);
-                    inputStream.close();
-                    dis.close();
+                    BufferedImage image = ImageIO.read(new FileInputStream(file));
                     if (image == null) {
                         return null;
                     }
-
-                    byte[] digest = messageDigest.digest();
-                    String checksum = new String(digest);
-
+                    
+                    String checksum = ApplicationLibrary.getChecksum(file);
+                    
                     T asset = (T) new ImageAsset(name, image, checksum, file);
-                    return new LibraryEntry<T>(asset);
+                    LibraryEntry<T> libraryEntry = new LibraryEntry<T>(asset);
+                    
+                    fileNameToLibraryEntryMap.put(file.getName(), libraryEntry);
+                    
+                    return libraryEntry;
                 }
 
                 default: {
                     System.err.println("Tried to read a file type that was not supported." + extension);
                 }
             }
-        } catch (NoSuchAlgorithmException | IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -142,20 +142,19 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
     }
 
     private void addLibraryEntry(LibraryEntry<T> libraryEntry) {
-        if (ApplicationLibrary.hasImageChecksum(libraryEntry.getFileChecksum())) {
+        if (libraryEntry == null) {
             return;
         }
-        ApplicationLibrary.addImageChecksum(libraryEntry.getFileChecksum());
 
         flowingContentPanel.add(libraryEntry);
+        flowingContentPanel.updateUI();
     }
 
-    private void removeLibraryEntry(LibraryEntry<T> libraryEntry) {
-        if (!ApplicationLibrary.hasImageChecksum(libraryEntry.getFileChecksum())) {
-            return;
-        }
-        ApplicationLibrary.removeImageChecksum(libraryEntry.getFileChecksum());
-
+    private void removeLibraryEntry(String name) {
+        knownFileNameSet.remove(name);
+        LibraryEntry<T> libraryEntry = fileNameToLibraryEntryMap.remove(name);
+        
         flowingContentPanel.remove(libraryEntry);
+        flowingContentPanel.updateUI();
     }
 }
