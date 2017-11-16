@@ -117,9 +117,12 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
                     InputStream inputStream = new FileInputStream(file);
                     DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
                     BufferedImage image = ImageIO.read(dis);
+                    inputStream.close();
+                    dis.close();
                     if (image == null) {
                         return null;
                     }
+
                     byte[] digest = messageDigest.digest();
                     String checksum = new String(digest);
 

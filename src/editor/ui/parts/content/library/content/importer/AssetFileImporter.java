@@ -74,13 +74,16 @@ public class AssetFileImporter extends JFileChooser {
             InputStream inputStream = new FileInputStream(selectedFile);
             DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
             BufferedImage image = ImageIO.read(dis);
+            inputStream.close();
+            dis.close();
             if (image == null) {
                 return;
             }
+            
             byte[] digest = messageDigest.digest();
-            String fileChecksum = new String(digest);
+            String checksum = new String(digest);
 
-            if (ApplicationLibrary.hasImageChecksum(fileChecksum)) {
+            if (ApplicationLibrary.hasImageChecksum(checksum)) {
                 return;
             }
 
