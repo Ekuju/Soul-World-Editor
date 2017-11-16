@@ -2,14 +2,20 @@ package editor.logic;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Settings {
     private static int gridRenderSize = 10;
     private static int worldSectionSize = 3840;
 
+    private static String projectFolder;
+
     private static boolean snapToGrid = false;
 
     private static int contentDividerPosition = 540;
+
+    private static String lastAssetImportPath = "~";
 
     public static int getGridRenderSize() {
         return gridRenderSize;
@@ -27,6 +33,14 @@ public class Settings {
         Settings.worldSectionSize = worldSectionSize;
     }
 
+    public static String getProjectFolder() {
+        return projectFolder;
+    }
+
+    public static void setProjectFolder(String projectFolder) {
+        Settings.projectFolder = projectFolder;
+    }
+
     public static boolean isSnapToGrid() {
         return snapToGrid;
     }
@@ -41,5 +55,21 @@ public class Settings {
 
     public static void setContentDividerPosition(int contentDividerPosition) {
         Settings.contentDividerPosition = contentDividerPosition;
+    }
+
+    public static String getLastAssetImportPath() {
+        return lastAssetImportPath;
+    }
+
+    public static void setLastAssetImportPath(String lastAssetImportPath) {
+        Settings.lastAssetImportPath = lastAssetImportPath;
+    }
+
+    static {
+        try {
+            projectFolder = new File("Soul World Project").getCanonicalPath();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

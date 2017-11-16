@@ -8,13 +8,20 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class ApplicationSettingsDialog extends JDialog {
     private IntegerTextField gridRenderSizeTextField;
     private IntegerTextField worldSectionSizeTextField;
+    private JTextField projectLocationField;
+
+    private String lastValidProjectLocation;
 
     public ApplicationSettingsDialog() {
         setLocationRelativeTo(Application.applicationFrame);
+
+        setModal(true);
 
         JPanel rootPanel = new JPanel();
         add(rootPanel);
@@ -24,6 +31,7 @@ public class ApplicationSettingsDialog extends JDialog {
         BoxLayout boxLayout = new BoxLayout(rootPanel, BoxLayout.Y_AXIS);
         rootPanel.setLayout(boxLayout);
 
+        // grid render size
         JPanel gridRenderSizePanel = new JPanel();
         rootPanel.add(gridRenderSizePanel);
 
@@ -38,6 +46,7 @@ public class ApplicationSettingsDialog extends JDialog {
         gridRenderSizeTextField.setColumns(12);
         gridRenderSizePanel.add(gridRenderSizeTextField);
 
+        // world section size
         JPanel worldSectionSizePanel = new JPanel();
         rootPanel.add(worldSectionSizePanel);
 
@@ -51,6 +60,28 @@ public class ApplicationSettingsDialog extends JDialog {
         worldSectionSizeTextField.setColumns(12);
         worldSectionSizePanel.add(worldSectionSizeTextField);
 
+        // project location
+        lastValidProjectLocation = Settings.getProjectFolder();
+
+        JPanel projectLocationPanel = new JPanel();
+        rootPanel.add(projectLocationPanel);
+
+        projectLocationPanel.setLayout(gridLayout);
+
+        JLabel projectLocationLabel = new JLabel("Project Location:");
+        projectLocationPanel.add(projectLocationLabel);
+
+        projectLocationField = new JTextField();
+        projectLocationPanel.add(projectLocationField);
+
+        projectLocationField.setText(lastValidProjectLocation);
+        projectLocationField.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                canonicalizeAndValidateProjectLocation();
+            }
+        });
+
         JPanel saveCancelPanel = new JPanel();
         rootPanel.add(saveCancelPanel);
 
@@ -60,6 +91,7 @@ public class ApplicationSettingsDialog extends JDialog {
         cancelButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                projectLocationField.setText(lastValidProjectLocation);
                 setVisible(false);
             }
         });
@@ -69,11 +101,15 @@ public class ApplicationSettingsDialog extends JDialog {
         acceptButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                canonicalizeAndValidateProjectLocation();
+
                 int gridRenderSize = gridRenderSizeTextField.getIntegerValue();
                 int worldSectionSize = worldSectionSizeTextField.getIntegerValue();
+                String projectLocation = projectLocationField.getText();
 
                 Settings.setGridRenderSize(gridRenderSize);
                 Settings.setWorldSectionSize(worldSectionSize);
+                Settings.setProjectFolder(projectLocation);
 
                 setVisible(false);
             }
@@ -81,5 +117,38 @@ public class ApplicationSettingsDialog extends JDialog {
         saveCancelPanel.add(acceptButton);
 
         pack();
+    }
+
+    private void canonicalizeAndValidateProjectLocation() {
+        File newProjectLocation = new File(projectLocationField.getText());
+        File parentFile = newProjectLocation.getParentFile();
+        while (!parentFile.exists()) {
+            parentFile = parentFile.getParentFile();
+        }
+
+        boolean existsAndCanReadWrite = newProjectLocation.exists() && newProjectLocation.canRead() && newProjectLocation.canWrite();
+        boolean doesntExistAndParentCanReadWrite = !newProjectLocation.exists() && parentFile.canRead()
+                && parentFile.canWrite();
+
+        if (!existsAndCanReadWrite && !doesntExistAndParentCanReadWrite) {
+            System.err.println("Cannot read or write in the new project location.");
+            projectLocationField.setText(lastValidProjectLocation);
+            projectLocationField.transferFocus();
+
+            return;
+        }
+
+        try {
+            String newProjectLocationPath = newProjectLocation.getCanonicalPath();
+            projectLocationField.setText(newProjectLocationPath);
+
+            lastValidProjectLocation = newProjectLocationPath;
+        } catch (IOException e) {
+            projectLocationField.setText(lastValidProjectLocation);
+
+            e.printStackTrace();
+        }
+
+        projectLocationField.transferFocus();
     }
 }

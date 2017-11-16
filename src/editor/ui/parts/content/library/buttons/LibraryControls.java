@@ -1,5 +1,7 @@
 package editor.ui.parts.content.library.buttons;
 
+import editor.ui.parts.content.library.content.importer.AssetFileImporter;
+
 import javax.swing.*;
 import java.awt.*;
 

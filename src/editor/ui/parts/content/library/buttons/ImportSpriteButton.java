@@ -1,6 +1,7 @@
 package editor.ui.parts.content.library.buttons;
 
 import editor.ui.parts.content.library.buttons.parts.CustomButton;
+import editor.ui.parts.content.library.content.importer.AssetFileImporter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImportSpriteButton extends CustomButton {
+    private AssetFileImporter assetFileImporter;
+
     public ImportSpriteButton() {
         try {
             Image rotateToolImage = ImageIO.read(new File("assets/add.png"))
@@ -22,10 +25,12 @@ public class ImportSpriteButton extends CustomButton {
 
         setToolTipText("Import Sprite");
 
+        assetFileImporter = new AssetFileImporter();
+
         addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                assetFileImporter.open();
             }
         });
     }
