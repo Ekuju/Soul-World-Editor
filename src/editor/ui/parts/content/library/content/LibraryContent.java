@@ -7,6 +7,9 @@ import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -15,9 +18,11 @@ public class LibraryContent extends JTabbedPane {
     private static LibraryContentFolders<StaticEntityAsset> staticEntityPane;
     private static LibraryContentFolders<BehavioralEntityAsset> behavioralEntityPane;
 
-    public static File imagesFolder;
-    public static File staticEntitiesFolder;
-    public static File behavioralEntitiesFolder;
+    private static File imagesFolder;
+    private static File staticEntitiesFolder;
+    private static File behavioralEntitiesFolder;
+    
+    private static LibraryContentFolders selectedLibraryContentFolder = null;
 
     public LibraryContent() {
         setBorder(null);
@@ -46,6 +51,23 @@ public class LibraryContent extends JTabbedPane {
 
         behavioralEntityPane = new LibraryContentFolders<BehavioralEntityAsset>(behavioralEntitiesFolder, "sbe");
         addTab("Behavioral Entities", behavioralEntityPane);
+        
+        selectedLibraryContentFolder = imagePane;
+        setSelectedIndex(0);
+        
+        addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int currentIndex = getSelectedIndex();
+                Component selectedComponent = getSelectedComponent();
+                if (!(selectedComponent instanceof LibraryContentFolders)) {
+                    System.err.println("Selected component is not an instance of LibraryContentFolder. " + selectedComponent);
+                    return;
+                }
+
+                selectedLibraryContentFolder = (LibraryContentFolders) getSelectedComponent();
+            }
+        });
     }
 
     public static File getImageFolderLocation() {
@@ -67,5 +89,9 @@ public class LibraryContent extends JTabbedPane {
         imagePane.scanAssets();
         staticEntityPane.scanAssets();
         behavioralEntityPane.scanAssets();
+    }
+    
+    public static synchronized LibraryEntry getSelectedAsset() {
+        return selectedLibraryContentFolder.getSelectedAsset();
     }
 }

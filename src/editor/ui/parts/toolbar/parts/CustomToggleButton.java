@@ -24,6 +24,8 @@ public class CustomToggleButton extends JToggleButton implements ChangeListener 
         setOpaque(true);
         setBackground(normalColor);
 
+        setFocusable(false);
+
         addChangeListener(this);
     }
 

@@ -18,6 +18,8 @@ public class CustomButton extends JButton implements ChangeListener {
 
         setOpaque(true);
         setBackground(normalColor);
+        
+        setFocusable(false);
 
         addChangeListener(this);
     }

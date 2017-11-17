@@ -1,5 +1,7 @@
 package editor.logic;
 
+import editor.ui.parts.content.stageproperties.stage.RenderingStage;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;

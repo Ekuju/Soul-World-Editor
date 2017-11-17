@@ -98,6 +98,18 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
             }
         }
     }
+    
+    public synchronized LibraryEntry<T> getSelectedAsset() {
+        for (String fileName : knownFileNameSet) {
+            LibraryEntry<T> libraryEntry = fileNameToLibraryEntryMap.get(fileName);
+            
+            if (libraryEntry.isSelected()) {
+                return libraryEntry;
+            }
+        }
+        
+        return null;
+    }
 
     private LibraryEntry<T> getLibraryEntryFromFile(File file) {
         String[] extensionParts = file.getName().split("\\.");

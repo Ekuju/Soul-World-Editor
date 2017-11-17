@@ -1,6 +1,7 @@
 package editor.ui.parts.content.library.content;
 
 import editor.logic.types.assets.Asset;
+import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -182,6 +183,10 @@ public class LibraryContentFolders<T extends Asset> extends JTabbedPane {
         }
 
         setSelectedIndex(currentSelectedTabIndex);
+    }
+    
+    public synchronized LibraryEntry<T> getSelectedAsset() {
+        return folderList.get(currentSelectedTabIndex).getSelectedAsset();
     }
 
     private void addFolder(String name) {

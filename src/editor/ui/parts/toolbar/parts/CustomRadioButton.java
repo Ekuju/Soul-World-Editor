@@ -20,6 +20,8 @@ public class CustomRadioButton extends JRadioButton implements ChangeListener {
         setOpaque(true);
         setBackground(normalColor);
 
+        setFocusable(false);
+
         addChangeListener(this);
     }
 

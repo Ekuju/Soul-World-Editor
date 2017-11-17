@@ -92,12 +92,10 @@ public class ApplicationLibrary extends JPanel {
     }
 
     public static synchronized boolean hasFileChecksum(String checksum) {
-        System.out.println("||| Checking: " + checksum);
         return checksumSet.contains(checksum);
     }
 
     private static synchronized void addFileChecksum(String checksum, File file) {
-        System.out.println("||| Adding: " + checksum);
         checksumSet.add(checksum);
         checksumToFileMap.put(checksum, file);
     }
@@ -120,7 +118,6 @@ public class ApplicationLibrary extends JPanel {
         
         // find all files
         Set<File> existingFiles = getAllValidFiles();
-        System.out.println(existingFiles);
         
         // determine which files are new
         for (File existingFile : existingFiles) {
@@ -144,11 +141,6 @@ public class ApplicationLibrary extends JPanel {
                 checksumToFileMap.put(checksum, existingFile);
             }
         }
-        
-        for (String checksum : checksumSet) {
-            System.out.println(checksum);
-        }
-        System.out.println();
     }
     
     private static Set<File> getAllValidFiles() {

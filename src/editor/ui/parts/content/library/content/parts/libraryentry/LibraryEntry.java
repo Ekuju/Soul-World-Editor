@@ -4,28 +4,34 @@ import editor.Application;
 import editor.logic.types.assets.Asset;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.LibraryContent;
+import editor.ui.parts.content.library.content.LibraryContentPane;
 import editor.ui.parts.content.library.content.importer.AssetFileImporter;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.File;
 
 public class LibraryEntry<T extends Asset> extends JPanel {
     public static final int SIZE = 64;
+    private static final Color BACKGROUND = new Color(0xc2c2c2);
+    private static final Color BACKGROUND_SELECTED = new Color(0xe2e2e2);
 
     private T entry;
+    
+    private boolean focused;
 
     public LibraryEntry(T entry) {
         setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
-        // setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        setBackground(new Color(0xa2a2a2));
+        setBackground(BACKGROUND);
 
         setPreferredSize(new Dimension(64, 64));
 
         BorderLayout borderLayout = new BorderLayout();
         setLayout(borderLayout);
+        
+        setFocusable(true);
 
         this.entry = entry;
 
@@ -37,9 +43,10 @@ public class LibraryEntry<T extends Asset> extends JPanel {
 
         nameField.setPreferredSize(new Dimension(SIZE, SIZE / 4 - 2));
         nameField.setMaximumSize(new Dimension(SIZE, SIZE / 4 - 2));
-        nameField.setFont(new Font("Arial", Font.PLAIN, 8));
+        nameField.setFont(new Font("Arial", Font.PLAIN, 10));
 
         nameField.setBorder(null);
+        nameField.setBackground(BACKGROUND);
 
         nameField.setText(entry.getAssetName());
         nameField.addActionListener(new ActionListener() {
@@ -56,7 +63,11 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                     System.out.println("Existing file does not have a file type");
                     nameField.setText(entry.getAssetName());
 
-                    nameField.transferFocus();
+                    Application.applicationFrame.requestFocus();
+                    return;
+                }
+                
+                if (entry.getFile().getName().equals(newFileName)) {
                     return;
                 }
 
@@ -69,21 +80,85 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                     System.err.println("Could not rename file " + entry.getFile().getName() + " to " + newFile.getName());
                     nameField.setText(entry.getAssetName());
 
-                    nameField.transferFocus();
+                    Application.applicationFrame.requestFocus();
                     return;
                 }
 
                 entry.setFile(newFile);
                 entry.setAssetName(newFileName);
 
-                nameField.transferFocus();
+                Application.applicationFrame.requestFocus();
 
                 LibraryContent.scanAssets();
+            }
+        });
+        nameField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                nameField.setBackground(Color.WHITE);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                nameField.setBackground(BACKGROUND);
+            }
+        });
+        
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // requestFocus();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                setBackground(Color.DARK_GRAY);
+                nameField.setBackground(Color.DARK_GRAY);
+
+                focused = true;
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setBackground(BACKGROUND);
+                nameField.setBackground(BACKGROUND);
+
+                focused = false;
             }
         });
     }
 
     public String getFileChecksum() {
         return entry.getChecksum();
+    }
+    
+    public File getFile() {
+        return entry.getFile();
+    }
+    
+    public boolean isSelected() {
+        return focused;
     }
 }
