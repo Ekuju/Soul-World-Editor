@@ -75,14 +75,25 @@ public class RenderingStage extends JComponent implements Runnable {
         }
     }
     
-    public static Point2D.Double getPosition() {
+    private static Point2D.Double getStagePosition() {
         return new Point2D.Double(realPosition.x, realPosition.y);
     }
-    
-    public static void setPosition(double x, double y) {
+
+    private static void setStagePosition(double x, double y) {
         realPosition.x = x;
         realPosition.y = y;
         position.x = (int) Math.round(x);
         position.y = (int) Math.round(y);
+    }
+
+    /**
+     * This method must be used to place everything in the rendering stage.
+     * @param x The x coordinate that the object would like to be placed at.
+     * @param y The y coordinate that the object would like to be placed at.
+     * @return The valid point that the object should be placed at.
+     */
+    public static Point getValidPosition(double x, double y) {
+        double snap = Settings.isSnapToGrid() ? Settings.getGridRenderSize() : 2.0;
+        return new Point((int) (Math.round(x / snap) * snap), (int) (Math.round(y / snap) * snap));
     }
 }
