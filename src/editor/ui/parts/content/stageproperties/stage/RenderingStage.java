@@ -1,23 +1,29 @@
 package editor.ui.parts.content.stageproperties.stage;
 
 import editor.logic.Settings;
+import utils.Focusable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 
 public class RenderingStage extends JComponent implements Runnable {
     private static final Color BACKGROUND = new Color(0xf0f0f0);
     
+    // this is the position of the top left corner of the rendering area
     private static Point2D.Double realPosition;
     private static Point position;
     
     public RenderingStage() {
         setBackground(BACKGROUND);
-        setFocusable(false);
+        setFocusable(true);
         
         realPosition = new Point2D.Double();
         position = new Point();
+        
+        Focusable.enable(this);
         
         new Thread(this).start();
     }
@@ -27,12 +33,14 @@ public class RenderingStage extends JComponent implements Runnable {
         int width = getWidth();
         int height = getHeight();
         
+        // render the background
         g.setColor(BACKGROUND);
         g.fillRect(0, 0, width, height);
         
-        g.setColor(Color.GRAY);
+        // render the grid lines
+        g.setColor(Color.LIGHT_GRAY);
         int gridSize = Settings.getGridRenderSize();
-        Point start = new Point(position.x % gridSize, position.y % gridSize);
+        Point start = new Point(-position.x % gridSize, -position.y % gridSize);
         for (int y = start.y; y < height; y += gridSize) {
             g.fillRect(0, y, width, 1);
         }
@@ -40,12 +48,23 @@ public class RenderingStage extends JComponent implements Runnable {
             g.fillRect(x, 0, 1, height);
         }
         
+        // shift the rendering area and pass it into the real rendering method
+        g.translate(-position.x, -position.y);
         render((Graphics2D) g);
+    }
+    
+    private void render(Graphics2D g) {
+        
+    }
+    
+    private void update() {
+        
     }
 
     @Override
     public void run() {
         while (true) {
+            update();
             repaint();
 
             try {
@@ -56,8 +75,8 @@ public class RenderingStage extends JComponent implements Runnable {
         }
     }
     
-    private void render(Graphics2D g) {
-        
+    public static Point2D.Double getPosition() {
+        return new Point2D.Double(realPosition.x, realPosition.y);
     }
     
     public static void setPosition(double x, double y) {

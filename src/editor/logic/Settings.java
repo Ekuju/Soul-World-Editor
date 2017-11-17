@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class Settings {
-    private static int gridRenderSize = 10;
+    private static int gridRenderSize = 32;
     private static int worldSectionSize = 3840;
 
     private static String projectFolder;

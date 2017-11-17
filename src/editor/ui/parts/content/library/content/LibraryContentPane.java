@@ -5,6 +5,7 @@ import editor.logic.types.assets.ImageAsset;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
 import editor.ui.parts.content.library.content.parts.ScrollablePanel;
+import utils.Focusable;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -36,6 +37,8 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
 
         getViewport().setBorder(null);
         getViewport().setBackground(new Color(0xeeeeee));
+
+        Focusable.enable(this);
 
         flowingContentPanel = new LibraryScrollableContent<T>();
         flowingContentPanel.setScrollableWidth(ScrollablePanel.ScrollableSizeHint.FIT);

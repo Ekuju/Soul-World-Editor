@@ -6,6 +6,7 @@ import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.LibraryContent;
 import editor.ui.parts.content.library.content.LibraryContentPane;
 import editor.ui.parts.content.library.content.importer.AssetFileImporter;
+import utils.Focusable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -104,32 +105,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
             }
         });
         
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                // requestFocus();
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
-        });
+        Focusable.enable(this);
         
         addFocusListener(new FocusListener() {
             @Override

@@ -133,7 +133,7 @@ public class ApplicationSettingsDialog extends JDialog {
         if (!existsAndCanReadWrite && !doesntExistAndParentCanReadWrite) {
             System.err.println("Cannot read or write in the new project location.");
             projectLocationField.setText(lastValidProjectLocation);
-            requestFocus();
+            requestFocusInWindow();
 
             return;
         }
@@ -149,6 +149,6 @@ public class ApplicationSettingsDialog extends JDialog {
             e.printStackTrace();
         }
 
-        requestFocus();
+        requestFocusInWindow();
     }
 }

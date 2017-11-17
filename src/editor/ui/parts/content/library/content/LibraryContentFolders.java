@@ -2,11 +2,14 @@ package editor.ui.parts.content.library.content;
 
 import editor.logic.types.assets.Asset;
 import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
+import utils.Focusable;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
@@ -36,6 +39,8 @@ public class LibraryContentFolders<T extends Asset> extends JTabbedPane {
         addTab("/", root);
 
         addTab("+", null);
+
+        Focusable.enable(this);
 
         currentFolderNames = new HashSet<String>();
         currentFolderNames.add("/");

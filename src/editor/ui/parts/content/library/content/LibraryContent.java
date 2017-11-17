@@ -5,11 +5,14 @@ import editor.logic.types.assets.ImageAsset;
 import editor.logic.types.assets.StaticEntityAsset;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
+import utils.Focusable;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -27,6 +30,8 @@ public class LibraryContent extends JTabbedPane {
     public LibraryContent() {
         setBorder(null);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+        
+        Focusable.enable(this);
 
         imagesFolder = new File(ApplicationLibrary.projectFolder, "images");
         if (!imagesFolder.exists()) {
