@@ -1,10 +1,12 @@
 package editor.ui.parts.content.library;
 
+import com.sun.deploy.util.StringUtils;
 import editor.logic.Settings;
 import editor.ui.parts.content.library.buttons.LibraryControls;
 import editor.ui.parts.content.library.content.LibraryContent;
 import editor.ui.parts.content.library.content.importer.AssetFileImporter;
 import editor.ui.parts.menu.filemenu.ApplicationFileMenuSettingsItem;
+import utils.SoulIO;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -84,7 +86,6 @@ public class ApplicationLibrary extends JPanel {
     }
     
     public static synchronized void scanLibrary() {
-        System.out.println("Test.");
         scanForFileChecksums();
         
         LibraryContent.scanLibrary();
@@ -125,6 +126,18 @@ public class ApplicationLibrary extends JPanel {
         for (File existingFile : existingFiles) {
             if (!knownFileSet.contains(existingFile)) {
                 String checksum = getChecksum(existingFile);
+                if (hasFileChecksum(checksum)) {
+                    System.err.println("Found duplicate file in the project folder. Attempting to delete.");
+                    boolean success = existingFile.delete();
+                    if (!success) {
+                        System.err.println("Could not delete duplicate file " + existingFile.getName() + ". Will attempt to delete on exit.");
+                        existingFile.deleteOnExit();
+                    } else {
+                        System.err.println("Deleted.");
+                    }
+                    
+                    continue;
+                }
 
                 checksumSet.add(checksum);
                 knownFileSet.add(existingFile);
@@ -186,15 +199,20 @@ public class ApplicationLibrary extends JPanel {
     public static String getChecksum(File file) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            FileInputStream inputStream = new FileInputStream(file);
+            byte[] bytes = SoulIO.convert(file);
+            if (bytes == null) {
+                return null;
+            }
+            
+            InputStream inputStream = new ByteArrayInputStream(bytes);
             DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
             DataInputStream dataInputStream = new DataInputStream(dis);
             
-            byte[] bytes = new byte[dataInputStream.available()];
-            dataInputStream.readFully(bytes);
-
+            byte[] byteBuffer = new byte[dataInputStream.available()];
+            dataInputStream.readFully(byteBuffer);
+            
             byte[] digest = messageDigest.digest();
-            System.out.println(file.getName() + ": " + new String(digest));
+            
             return new String(digest);
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
