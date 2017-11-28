@@ -36,7 +36,6 @@ public class ApplicationFrame extends JFrame {
         Listener listener = new Listener();
 
         addKeyListener(listener);
-        addMouseListener(listener);
 
         applicationMenuBar = new ApplicationMenuBar();
         setJMenuBar(applicationMenuBar);

@@ -12,6 +12,8 @@ import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AssetFileImporter extends JFileChooser {
     public static final String VALID_FILE_NAME_REGEX = "[a-zA-Z0-9\\-_\\. ]+";

@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class StageCombinedPanel extends JPanel {
-    private RenderingStage renderingStage;
+    public static RenderingStage renderingStage;
     
     public StageCombinedPanel() {
         GridLayout gridLayout = new GridLayout(1, 1);

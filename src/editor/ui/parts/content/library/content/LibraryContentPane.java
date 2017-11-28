@@ -127,30 +127,21 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
         }
         String name = nameBuilder.toString();
 
-        try {
-            switch (extension) {
-                case "png": {
-                    BufferedImage image = ImageIO.read(new FileInputStream(file));
-                    if (image == null) {
-                        return null;
-                    }
-                    
-                    String checksum = ApplicationLibrary.getChecksum(file);
-                    
-                    T asset = (T) new ImageAsset(name, image, checksum, file);
-                    LibraryEntry<T> libraryEntry = new LibraryEntry<T>(asset);
-                    
-                    fileNameToLibraryEntryMap.put(file.getName(), libraryEntry);
-                    
-                    return libraryEntry;
-                }
-
-                default: {
-                    System.err.println("Tried to read a file type that was not supported." + extension);
-                }
+        switch (extension) {
+            case "png": {
+                String checksum = ApplicationLibrary.getChecksum(file);
+                
+                T asset = (T) new ImageAsset(name, checksum, file);
+                LibraryEntry<T> libraryEntry = new LibraryEntry<T>(asset);
+                
+                fileNameToLibraryEntryMap.put(file.getName(), libraryEntry);
+                
+                return libraryEntry;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            default: {
+                System.err.println("Tried to read a file type that was not supported." + extension);
+            }
         }
 
         return null;

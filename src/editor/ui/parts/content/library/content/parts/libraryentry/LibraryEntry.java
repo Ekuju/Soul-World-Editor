@@ -6,22 +6,29 @@ import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.LibraryContent;
 import editor.ui.parts.content.library.content.LibraryContentPane;
 import editor.ui.parts.content.library.content.importer.AssetFileImporter;
+import editor.ui.parts.content.stageproperties.StageCombinedPanel;
+import editor.ui.parts.content.stageproperties.stage.DraggingManager;
 import utils.Focusable;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.io.File;
 
 public class LibraryEntry<T extends Asset> extends JPanel {
     public static final int SIZE = 64;
-    private static final Color BACKGROUND = new Color(0xc2c2c2);
-    private static final Color BACKGROUND_SELECTED = new Color(0xe2e2e2);
+    public static final Color BACKGROUND = new Color(0xc2c2c2);
+    private static final double MINIMUM_DRAG_DISTANCE = 4;
 
     private T entry;
-    
     private boolean focused;
+    
+    private boolean mouseDown;
+    private Point mouseDownPosition;
+    private Point2D.Double mousePosition;
+    private boolean dragging;
 
     public LibraryEntry(T entry) {
         setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY, 1));
@@ -36,7 +43,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
 
         this.entry = entry;
 
-        PreviewPanel previewPanel = new PreviewPanel(entry.getPreviewImage());
+        PreviewPanel previewPanel = new PreviewPanel(entry);
         add(previewPanel, BorderLayout.PAGE_START);
 
         JTextField nameField = new JTextField();
@@ -124,6 +131,72 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                 focused = false;
             }
         });
+        
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                double x = (double) e.getPoint().x / PreviewPanel.MAX_WIDTH;
+                double y = (double) e.getPoint().y / PreviewPanel.MAX_HEIGHT;
+                mouseDownPosition = new Point(e.getPoint());
+                mousePosition = new Point2D.Double(x, y);
+                
+                mouseDown = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                endDrag(e.getLocationOnScreen());
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (mouseDown && !dragging) {
+                    beginDrag();
+                }
+            }
+        });
+        
+        addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point point = e.getPoint();
+
+                if (mouseDown && !dragging) {
+                    double dx = mouseDownPosition.x - point.x;
+                    double dy = mouseDownPosition.y - point.y;
+
+                    if (dx * dx + dy * dy >= MINIMUM_DRAG_DISTANCE * MINIMUM_DRAG_DISTANCE) {
+                        beginDrag();
+                    }
+                }
+                
+                DraggingManager.updateDrag(e.getLocationOnScreen());
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                Point point = e.getPoint();
+                
+                if (mouseDown && !dragging) {
+                    double dx = mouseDownPosition.x - point.x;
+                    double dy = mouseDownPosition.y - point.y;
+                    
+                    if (dx * dx + dy * dy >= MINIMUM_DRAG_DISTANCE * MINIMUM_DRAG_DISTANCE) {
+                        beginDrag();
+                    }
+                }
+            }
+        });
     }
 
     public String getFileChecksum() {
@@ -136,5 +209,16 @@ public class LibraryEntry<T extends Asset> extends JPanel {
     
     public boolean isSelected() {
         return focused;
+    }
+    
+    private void beginDrag() {
+        dragging = true;
+        DraggingManager.beginDrag(entry.getAssetInstance(), mousePosition);
+    }
+    
+    private void endDrag(Point screenPosition) {
+        mouseDown = false;
+        dragging = false;
+        DraggingManager.endDrag(screenPosition);
     }
 }

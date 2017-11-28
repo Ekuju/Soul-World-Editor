@@ -1,5 +1,7 @@
 package editor.logic.types.assets;
 
+import editor.logic.stage.parts.AssetInstance;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -15,13 +17,8 @@ public class StaticEntityAsset implements Asset {
     }
 
     @Override
-    public BufferedImage getPreviewImage() {
+    public BufferedImage getPreviewImage(int maxWidth, int maxHeight) {
         return null;
-    }
-
-    @Override
-    public void setPreviewImage(BufferedImage image) {
-
     }
 
     @Override
@@ -37,5 +34,10 @@ public class StaticEntityAsset implements Asset {
     @Override
     public void setFile(File file) {
 
+    }
+
+    @Override
+    public AssetInstance getAssetInstance() {
+        return null;
     }
 }

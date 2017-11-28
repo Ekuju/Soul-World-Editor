@@ -49,4 +49,26 @@ public class SoulIO {
             }
         }
     }
+    
+    public static BufferedImage getImage(File file) {
+        String[] extensionParts = file.getName().split("\\.");
+        if (extensionParts.length <= 1) {
+            System.err.println("File does not have a type.");
+
+            return null;
+        }
+
+        String extension = extensionParts[extensionParts.length - 1].toLowerCase();
+        if (!extension.equals("png")) {
+            return null;
+        }
+
+        try {
+            return ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
 }

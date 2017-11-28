@@ -10,14 +10,11 @@ import java.io.IOException;
 public class Settings {
     private static int gridRenderSize = 32;
     private static int worldSectionSize = 3840;
-
     private static String projectFolder;
-
     private static boolean snapToGrid = false;
-
     private static int contentDividerPosition = 540;
-
     private static String lastAssetImportPath = "~";
+    private static double viewPitch = 45.0; // the angle the game is rendered at, 90 degrees is straight down
 
     public static int getGridRenderSize() {
         return gridRenderSize;
@@ -65,6 +62,14 @@ public class Settings {
 
     public static void setLastAssetImportPath(String lastAssetImportPath) {
         Settings.lastAssetImportPath = lastAssetImportPath;
+    }
+
+    public static double getViewPitch() {
+        return viewPitch;
+    }
+
+    public static void setViewPitch(double viewPitch) {
+        Settings.viewPitch = viewPitch;
     }
 
     static {

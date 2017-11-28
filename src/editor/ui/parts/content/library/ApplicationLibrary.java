@@ -31,6 +31,7 @@ public class ApplicationLibrary extends JPanel {
     private static Set<String> checksumSet = new HashSet<String>();
     private static Map<String, File> checksumToFileMap = new HashMap<String, File>();
     private static Set<File> knownFileSet = new HashSet<File>();
+    private static Map<String, BufferedImage> checksumToImageMap = new HashMap<String, BufferedImage>();
 
     public static File projectFolder;
 
@@ -95,24 +96,13 @@ public class ApplicationLibrary extends JPanel {
         return checksumSet.contains(checksum);
     }
 
-    private static synchronized void addFileChecksum(String checksum, File file) {
-        checksumSet.add(checksum);
-        checksumToFileMap.put(checksum, file);
-    }
-
-    private static synchronized void removeFileChecksum(String checksum) {
-        checksumSet.remove(checksum);
-        checksumToFileMap.remove(checksum);
-    }
-
     public synchronized static void scanForFileChecksums() {
         // remove checksums for files that don't exist anymore
         for (String checksum : new HashSet<String>(checksumSet)) {
             File file = checksumToFileMap.get(checksum);
             
             if (!file.exists()) {
-                checksumSet.remove(checksum);
-                checksumToFileMap.remove(checksum);
+                removeFileChecksum(checksum);
             }
         }
         
@@ -136,10 +126,57 @@ public class ApplicationLibrary extends JPanel {
                     continue;
                 }
 
-                checksumSet.add(checksum);
                 knownFileSet.add(existingFile);
-                checksumToFileMap.put(checksum, existingFile);
+                addFileChecksum(checksum, existingFile);
             }
+        }
+    }
+    
+    public static BufferedImage getImage(String checksum) {
+        return checksumToImageMap.get(checksum);
+    }
+
+    public static String getChecksum(File file) {
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            byte[] bytes = SoulIO.convert(file);
+            if (bytes == null) {
+                return null;
+            }
+
+            InputStream inputStream = new ByteArrayInputStream(bytes);
+            DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
+            DataInputStream dataInputStream = new DataInputStream(dis);
+
+            byte[] byteBuffer = new byte[dataInputStream.available()];
+            dataInputStream.readFully(byteBuffer);
+
+            byte[] digest = messageDigest.digest();
+
+            return new String(digest);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private static synchronized void addFileChecksum(String checksum, File file) {
+        checksumSet.add(checksum);
+        checksumToFileMap.put(checksum, file);
+
+        BufferedImage image = SoulIO.getImage(file);
+        if (image != null) {
+            checksumToImageMap.put(checksum, image);
+        }
+    }
+
+    private static synchronized void removeFileChecksum(String checksum) {
+        checksumSet.remove(checksum);
+        checksumToFileMap.remove(checksum);
+
+        if (checksumToImageMap.containsKey(checksum)) {
+            checksumToImageMap.remove(checksum);
         }
     }
     
@@ -186,30 +223,5 @@ public class ApplicationLibrary extends JPanel {
                 getAllValidFiles(folder, validFileSet);
             }
         }
-    }
-    
-    public static String getChecksum(File file) {
-        try {
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            byte[] bytes = SoulIO.convert(file);
-            if (bytes == null) {
-                return null;
-            }
-            
-            InputStream inputStream = new ByteArrayInputStream(bytes);
-            DigestInputStream dis = new DigestInputStream(inputStream, messageDigest);
-            DataInputStream dataInputStream = new DataInputStream(dis);
-            
-            byte[] byteBuffer = new byte[dataInputStream.available()];
-            dataInputStream.readFully(byteBuffer);
-            
-            byte[] digest = messageDigest.digest();
-            
-            return new String(digest);
-        } catch (NoSuchAlgorithmException | IOException e) {
-            e.printStackTrace();
-        }
-        
-        return null;
     }
 }
