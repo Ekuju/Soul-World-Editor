@@ -1,26 +1,24 @@
 package editor.ui.parts.content.stageproperties.stage;
 
 import editor.logic.stage.parts.AssetInstance;
-import editor.ui.listeners.StaticListener;
 import editor.ui.parts.content.stageproperties.StageCombinedPanel;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 
 /**
  * Created by Trent on 11/27/2017.
  */
-public class DraggingManager {
+public class InstanceDraggingManager {
     private static AssetInstance instance;
     private static Point2D.Double dragRelativePosition;
     
     public static synchronized void beginDrag(AssetInstance instance, Point2D.Double dragRelativePosition) {
-        DraggingManager.instance = instance;
-        DraggingManager.dragRelativePosition = dragRelativePosition;
+        InstanceDraggingManager.instance = instance;
+        InstanceDraggingManager.dragRelativePosition = dragRelativePosition;
         
-        if (DraggingManager.dragRelativePosition == null) {
-            DraggingManager.dragRelativePosition = new Point2D.Double();
+        if (InstanceDraggingManager.dragRelativePosition == null) {
+            InstanceDraggingManager.dragRelativePosition = new Point2D.Double();
         }
     }
     

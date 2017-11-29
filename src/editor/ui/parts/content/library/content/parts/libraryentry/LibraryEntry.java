@@ -2,16 +2,12 @@ package editor.ui.parts.content.library.content.parts.libraryentry;
 
 import editor.Application;
 import editor.logic.types.assets.Asset;
-import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.LibraryContent;
-import editor.ui.parts.content.library.content.LibraryContentPane;
 import editor.ui.parts.content.library.content.importer.AssetFileImporter;
-import editor.ui.parts.content.stageproperties.StageCombinedPanel;
-import editor.ui.parts.content.stageproperties.stage.DraggingManager;
+import editor.ui.parts.content.stageproperties.stage.InstanceDraggingManager;
 import utils.Focusable;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -180,7 +176,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                     }
                 }
                 
-                DraggingManager.updateDrag(e.getLocationOnScreen());
+                InstanceDraggingManager.updateDrag(e.getLocationOnScreen());
             }
 
             @Override
@@ -213,12 +209,12 @@ public class LibraryEntry<T extends Asset> extends JPanel {
     
     private void beginDrag() {
         dragging = true;
-        DraggingManager.beginDrag(entry.getAssetInstance(), mousePosition);
+        InstanceDraggingManager.beginDrag(entry.getAssetInstance(), mousePosition);
     }
     
     private void endDrag(Point screenPosition) {
         mouseDown = false;
         dragging = false;
-        DraggingManager.endDrag(screenPosition);
+        InstanceDraggingManager.endDrag(screenPosition);
     }
 }

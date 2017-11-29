@@ -1,6 +1,5 @@
 package editor.ui;
 
-import editor.ui.listeners.Listener;
 import editor.ui.parts.content.StageContentSplitter;
 import editor.ui.parts.menu.ApplicationMenuBar;
 import editor.ui.parts.toolbar.ApplicationToolBar;
@@ -33,10 +32,6 @@ public class ApplicationFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        Listener listener = new Listener();
-
-        addKeyListener(listener);
-
         applicationMenuBar = new ApplicationMenuBar();
         setJMenuBar(applicationMenuBar);
 
@@ -45,6 +40,12 @@ public class ApplicationFrame extends JFrame {
 
         stageContentSplitter = new StageContentSplitter();
         add(stageContentSplitter, BorderLayout.CENTER);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) screenSize.getWidth();
+        int height = (int) screenSize.getHeight();
+        
+        setLocation((width - ApplicationFrame.WIDTH) / 2, (height - ApplicationFrame.HEIGHT) / 2);
 
         setSize(new Dimension(ApplicationFrame.WIDTH, ApplicationFrame.HEIGHT));
         setPreferredSize(new Dimension(ApplicationFrame.WIDTH, ApplicationFrame.HEIGHT));

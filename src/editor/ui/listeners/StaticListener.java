@@ -1,17 +1,12 @@
 package editor.ui.listeners;
 
+import editor.Application;
+
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public class StaticListener {
-    public static void keyTyped(KeyEvent e) {
-
-    }
-
-    public static void keyPressed(KeyEvent e) {
-
-    }
-
-    public static void keyReleased(KeyEvent e) {
-
+    public static Point getMousePosition() {
+        return MouseInfo.getPointerInfo().getLocation();
     }
 }
