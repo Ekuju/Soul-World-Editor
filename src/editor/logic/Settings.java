@@ -15,6 +15,7 @@ public class Settings {
     private static int contentDividerPosition = 540;
     private static String lastAssetImportPath = "~";
     private static double viewPitch = 45.0; // the angle the game is rendered at, 90 degrees is straight down
+    private static int minimumSnap = 2; // the minimum snap that an asset instance can be placed at, default 2 for pixel games
 
     public static int getGridRenderSize() {
         return gridRenderSize;
@@ -70,6 +71,14 @@ public class Settings {
 
     public static void setViewPitch(double viewPitch) {
         Settings.viewPitch = viewPitch;
+    }
+
+    public static int getMinimumSnap() {
+        return minimumSnap;
+    }
+
+    public static void setMinimumSnap(int minimumSnap) {
+        Settings.minimumSnap = minimumSnap;
     }
 
     static {

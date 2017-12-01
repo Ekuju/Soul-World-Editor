@@ -29,10 +29,12 @@ public class InstanceDraggingManager {
 
         Point relativeMousePosition = RenderingStage.getRelativeMousePosition();
 
-        Point offset = new Point((int) Math.round(instance.getWidth() * dragRelativePosition.x), (int) Math.round(instance.getHeight() * dragRelativePosition.y));
-        Point anchor = new Point((int) Math.round(instance.getWidth() * instance.getAnchor().x), (int) Math.round(instance.getHeight() * instance.getAnchor().y));
+        Point2D.Double offset = new Point2D.Double(instance.getWidth() * dragRelativePosition.x, instance.getHeight() * dragRelativePosition.y);
+        Point2D.Double anchor = new Point2D.Double(instance.getWidth() * instance.getAnchor().x, instance.getHeight() * instance.getAnchor().y);
 
-        instance.setPosition(anchor.x - offset.x + relativeMousePosition.x, anchor.y - offset.y + relativeMousePosition.y);
+        Point position = RenderingStage.getValidPosition(anchor.x - offset.x + relativeMousePosition.x, anchor.y - offset.y + relativeMousePosition.y);
+
+        instance.setPosition(position.x, position.y);
     }
 
     public static synchronized void renderDrag(Graphics2D g) {

@@ -26,9 +26,9 @@ public class ImageAssetInstance extends AssetInstance {
             generateImage();
         }
 
-        Point anchor = getAnchorPosition();
-        Point validPosition = RenderingStage.getValidPosition(getPosition().x, getPosition().y);
-        g.drawImage(image, validPosition.x - anchor.x, validPosition.y - anchor.y, null);
+        Point position = getPosition();
+        Point anchorPosition = getAnchorPosition();
+        g.drawImage(image, position.x - anchorPosition.x, position.y - anchorPosition.y, null);
     }
 
     @Override
