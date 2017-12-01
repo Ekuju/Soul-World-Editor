@@ -1,6 +1,6 @@
 package editor.logic.types.assets;
 
-import editor.logic.stage.parts.AssetInstance;
+import editor.logic.stage.parts.instances.AssetInstance;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

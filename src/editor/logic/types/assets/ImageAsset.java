@@ -1,7 +1,7 @@
 package editor.logic.types.assets;
 
-import editor.logic.stage.parts.AssetInstance;
-import editor.logic.stage.parts.ImageAssetInstance;
+import editor.logic.stage.parts.instances.AssetInstance;
+import editor.logic.stage.parts.instances.ImageAssetInstance;
 import editor.ui.parts.content.library.ApplicationLibrary;
 
 import java.awt.*;
@@ -38,13 +38,13 @@ public class ImageAsset implements Asset {
         double scaleX = (double) width / maxWidth;
         double scaleY = (double) height / maxHeight;
         double scale = 1.0 / Math.max(scaleX, scaleY);
-        
+
         BufferedImage returnImage = new BufferedImage((int) Math.round(width * scale), (int) Math.round(height * scale), BufferedImage.TYPE_INT_ARGB);
         Image scaledInstance = image.getScaledInstance(returnImage.getWidth(), returnImage.getHeight(), BufferedImage.SCALE_SMOOTH);
-        
+
         Graphics g = returnImage.getGraphics();
         g.drawImage(scaledInstance, 0, 0, null);
-        
+
         return returnImage;
     }
 

@@ -1,6 +1,5 @@
-package editor.logic.stage.parts;
+package editor.logic.stage.parts.instances;
 
-import editor.Application;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.stageproperties.stage.RenderingStage;
 
@@ -13,10 +12,10 @@ import java.awt.image.BufferedImage;
  */
 public class ImageAssetInstance extends AssetInstance {
     private String checksum;
-    
+
     private Point2D.Double imageScale;
     private BufferedImage image;
-    
+
     public ImageAssetInstance(String checksum) {
         this.checksum = checksum;
     }
@@ -26,7 +25,7 @@ public class ImageAssetInstance extends AssetInstance {
         if (!getScale().equals(imageScale)) {
             generateImage();
         }
-        
+
         Point anchor = getAnchorPosition();
         Point validPosition = RenderingStage.getValidPosition(getPosition().x, getPosition().y);
         g.drawImage(image, validPosition.x - anchor.x, validPosition.y - anchor.y, null);
@@ -41,15 +40,15 @@ public class ImageAssetInstance extends AssetInstance {
     public int getHeight() {
         return (int) Math.round(ApplicationLibrary.getImage(checksum).getHeight() * getScale().y);
     }
-    
+
     private BufferedImage getImage(String checksum) {
         return ApplicationLibrary.getImage(checksum);
     }
-    
+
     private void generateImage() {
         image = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
         imageScale = getScale();
-        
+
         BufferedImage actualImage = getImage(checksum);
         Image scaledImage = actualImage.getScaledInstance(getWidth(), getHeight(), BufferedImage.SCALE_FAST);
 

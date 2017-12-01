@@ -20,7 +20,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
 
     private T entry;
     private boolean focused;
-    
+
     private boolean mouseDown;
     private Point mouseDownPosition;
     private Point2D.Double mousePosition;
@@ -34,7 +34,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
 
         BorderLayout borderLayout = new BorderLayout();
         setLayout(borderLayout);
-        
+
         setFocusable(true);
 
         this.entry = entry;
@@ -70,7 +70,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                     Application.applicationFrame.requestFocus();
                     return;
                 }
-                
+
                 if (entry.getFile().getName().equals(newFileName)) {
                     return;
                 }
@@ -107,9 +107,9 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                 nameField.setBackground(BACKGROUND);
             }
         });
-        
+
         Focusable.enable(this);
-        
+
         addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -127,11 +127,11 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                 focused = false;
             }
         });
-        
+
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                
+
             }
 
             @Override
@@ -140,7 +140,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                 double y = (double) e.getPoint().y / PreviewPanel.MAX_HEIGHT;
                 mouseDownPosition = new Point(e.getPoint());
                 mousePosition = new Point2D.Double(x, y);
-                
+
                 mouseDown = true;
             }
 
@@ -161,7 +161,7 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                 }
             }
         });
-        
+
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
@@ -175,18 +175,18 @@ public class LibraryEntry<T extends Asset> extends JPanel {
                         beginDrag();
                     }
                 }
-                
-                InstanceDraggingManager.updateDrag(e.getLocationOnScreen());
+
+                InstanceDraggingManager.updateDrag();
             }
 
             @Override
             public void mouseMoved(MouseEvent e) {
                 Point point = e.getPoint();
-                
+
                 if (mouseDown && !dragging) {
                     double dx = mouseDownPosition.x - point.x;
                     double dy = mouseDownPosition.y - point.y;
-                    
+
                     if (dx * dx + dy * dy >= MINIMUM_DRAG_DISTANCE * MINIMUM_DRAG_DISTANCE) {
                         beginDrag();
                     }
@@ -198,20 +198,20 @@ public class LibraryEntry<T extends Asset> extends JPanel {
     public String getFileChecksum() {
         return entry.getChecksum();
     }
-    
+
     public File getFile() {
         return entry.getFile();
     }
-    
+
     public boolean isSelected() {
         return focused;
     }
-    
+
     private void beginDrag() {
         dragging = true;
         InstanceDraggingManager.beginDrag(entry.getAssetInstance(), mousePosition);
     }
-    
+
     private void endDrag(Point screenPosition) {
         mouseDown = false;
         dragging = false;

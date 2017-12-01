@@ -1,6 +1,6 @@
 package editor.ui.parts.content.stageproperties.stage;
 
-import editor.logic.stage.parts.AssetInstance;
+import editor.logic.stage.parts.instances.AssetInstance;
 import editor.ui.parts.content.stageproperties.StageCombinedPanel;
 
 import java.awt.*;
@@ -12,37 +12,37 @@ import java.awt.geom.Point2D;
 public class InstanceDraggingManager {
     private static AssetInstance instance;
     private static Point2D.Double dragRelativePosition;
-    
+
     public static synchronized void beginDrag(AssetInstance instance, Point2D.Double dragRelativePosition) {
         InstanceDraggingManager.instance = instance;
         InstanceDraggingManager.dragRelativePosition = dragRelativePosition;
-        
+
         if (InstanceDraggingManager.dragRelativePosition == null) {
             InstanceDraggingManager.dragRelativePosition = new Point2D.Double();
         }
     }
-    
-    public static synchronized void updateDrag(Point mousePosition) {
+
+    public static synchronized void updateDrag() {
         if (instance == null) {
             return;
         }
-        
-        Point relativeMousePosition = RenderingStage.getRelativeMousePositionFromScreenMousePosition(mousePosition);
-        
+
+        Point relativeMousePosition = RenderingStage.getRelativeMousePosition();
+
         Point offset = new Point((int) Math.round(instance.getWidth() * dragRelativePosition.x), (int) Math.round(instance.getHeight() * dragRelativePosition.y));
         Point anchor = new Point((int) Math.round(instance.getWidth() * instance.getAnchor().x), (int) Math.round(instance.getHeight() * instance.getAnchor().y));
 
         instance.setPosition(anchor.x - offset.x + relativeMousePosition.x, anchor.y - offset.y + relativeMousePosition.y);
     }
-    
+
     public static synchronized void renderDrag(Graphics2D g) {
         if (instance == null) {
             return;
         }
-        
+
         instance.render(g);
     }
-    
+
     public static synchronized void endDrag(Point screenPosition) {
         Point renderingStagePosition = StageCombinedPanel.renderingStage.getLocationOnScreen();
         Dimension renderingStageDimensions = StageCombinedPanel.renderingStage.getSize();
@@ -51,13 +51,13 @@ public class InstanceDraggingManager {
         boolean vertical = screenPosition.y >= renderingStagePosition.y && screenPosition.y < renderingStagePosition.y + renderingStageDimensions.height;
         if (!horizontal || !vertical) {
             cancelDrag();
-            
+
             return;
         }
-        
+
         cancelDrag();
     }
-    
+
     private static synchronized void cancelDrag() {
         instance = null;
         dragRelativePosition = null;
