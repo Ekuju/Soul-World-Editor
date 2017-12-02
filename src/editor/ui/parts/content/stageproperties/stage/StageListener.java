@@ -42,7 +42,10 @@ public class StageListener implements KeyListener, MouseWheelListener {
         if (amount == 0) {
             return;
         }
-        
+
+        // on mac you scroll too fast
+        amount = Math.signum(amount);
+
         RenderingStage.zoom(amount);
     }
 }

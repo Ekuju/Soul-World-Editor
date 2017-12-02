@@ -1,5 +1,7 @@
+# Default project folder
 Soul World Project/
-
+# Not sure what this file is, but I recognize it and I know I don't want it
+.DS_Store
 
 
 # Created by https://www.gitignore.io/api/intellij

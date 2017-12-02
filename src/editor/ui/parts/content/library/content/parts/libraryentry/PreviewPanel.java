@@ -38,7 +38,7 @@ public class PreviewPanel extends JComponent {
                 0,
                 width,
                 height,
-                new Color(0, 0, 0, 0),
+                null,
                 null
         );
 
