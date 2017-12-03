@@ -15,8 +15,12 @@ import java.util.Set;
  */
 public class Focusable {
     private static Set<JComponent> components = new HashSet<JComponent>();
-    
+
     public static void enable(JComponent component) {
+        enable(component, true);
+    }
+    
+    public static void enable(JComponent component, boolean escapeKey) {
         if (components.contains(component)) {
             System.err.println("Tried to enable focusing on the same component twice. " + component);
             
@@ -56,7 +60,7 @@ public class Focusable {
         component.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == KeyEvent.VK_ESCAPE) {
+                if (e.getKeyChar() == KeyEvent.VK_ESCAPE && escapeKey) {
                     Application.applicationFrame.requestFocus();
                 }
             }

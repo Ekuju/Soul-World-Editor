@@ -93,7 +93,7 @@ public class AssetFileImporter extends JFileChooser {
             
             boolean success = newFileLockLocation.delete();
             if (!success) {
-                System.err.println("Could not delete lock file " + newFileLockLocation.getName() + ". Will try to delete it on close.");
+                System.err.println("Could not delete lock file " + newFileLockLocation.getName() + ". Will try to delete it on save.");
                 newFileLockLocation.deleteOnExit();
             }
 

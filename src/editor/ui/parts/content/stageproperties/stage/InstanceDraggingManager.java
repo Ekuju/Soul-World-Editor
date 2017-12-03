@@ -1,6 +1,7 @@
 package editor.ui.parts.content.stageproperties.stage;
 
 import editor.logic.stage.parts.instances.AssetInstance;
+import editor.logic.stage.parts.instances.ImageAssetInstance;
 import editor.ui.parts.content.stageproperties.StageCombinedPanel;
 
 import java.awt.*;
@@ -10,6 +11,9 @@ import java.awt.geom.Point2D;
  * Created by Trent on 11/27/2017.
  */
 public class InstanceDraggingManager {
+    private static final Color VALID_COLOR = new Color(0xd9e3ff);
+    private static final Color INVALID_COLOR = new Color(0xd31f0e);
+
     private static AssetInstance instance;
     private static Point2D.Double dragRelativePosition;
 
@@ -42,6 +46,13 @@ public class InstanceDraggingManager {
             return;
         }
 
+        if (instance instanceof ImageAssetInstance) {
+            if (RenderingStage.getScene().acceptsImageAssets()) {
+                instance.tint(VALID_COLOR);
+            } else {
+                instance.tint(INVALID_COLOR);
+            }
+        }
         instance.render(g);
     }
 
@@ -55,6 +66,14 @@ public class InstanceDraggingManager {
             cancelDrag();
 
             return;
+        }
+
+        if (instance instanceof ImageAssetInstance) {
+            if (RenderingStage.getScene().acceptsImageAssets()) {
+                RenderingStage.getScene().addAssetInstance((ImageAssetInstance) instance);
+            }
+        } else {
+            System.err.println("Tried to end the drag on an invalid asset instance type.");
         }
 
         cancelDrag();

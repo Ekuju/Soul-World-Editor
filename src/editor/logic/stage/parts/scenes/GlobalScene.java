@@ -1,10 +1,14 @@
 package editor.logic.stage.parts.scenes;
 
+import editor.ui.parts.content.library.ApplicationLibrary;
+
+import java.io.File;
+
 /**
  * Created by Trent on 11/29/2017.
  */
 public class GlobalScene extends Scene {
-    private static final String EXTENSION = "sgs";
+    public static final String EXTENSION = "sgs";
 
     public GlobalScene() {
         super("world");
@@ -23,5 +27,10 @@ public class GlobalScene extends Scene {
     @Override
     public String getExtension() {
         return EXTENSION;
+    }
+
+    @Override
+    public File getFile() {
+        return new File(ApplicationLibrary.projectFolder, getFileName() + getExtension());
     }
 }

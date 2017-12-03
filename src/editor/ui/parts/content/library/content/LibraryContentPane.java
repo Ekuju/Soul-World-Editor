@@ -1,7 +1,9 @@
 package editor.ui.parts.content.library.content;
 
+import editor.logic.stage.parts.scenes.StaticEntityScene;
 import editor.logic.types.assets.Asset;
 import editor.logic.types.assets.ImageAsset;
+import editor.logic.types.assets.StaticEntityAsset;
 import editor.ui.parts.content.library.ApplicationLibrary;
 import editor.ui.parts.content.library.content.parts.libraryentry.LibraryEntry;
 import editor.ui.parts.content.library.content.parts.ScrollablePanel;
@@ -139,8 +141,19 @@ public class LibraryContentPane<T extends Asset> extends JScrollPane {
                 return libraryEntry;
             }
 
+            case StaticEntityScene.EXTENSION: {
+                String checksum = ApplicationLibrary.getChecksum(file);
+
+                T asset = (T) new StaticEntityAsset(name, checksum, file);
+                LibraryEntry<T> libraryEntry = new LibraryEntry<T>(asset);
+
+                fileNameToLibraryEntryMap.put(file.getName(), libraryEntry);
+
+                return libraryEntry;
+            }
+
             default: {
-                System.err.println("Tried to read a file type that was not supported." + extension);
+                System.err.println("Tried to read a file type that was not supported. " + name + "." + extension);
             }
         }
 

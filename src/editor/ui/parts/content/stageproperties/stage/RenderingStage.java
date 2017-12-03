@@ -10,6 +10,7 @@ import utils.Focusable;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.LinkedList;
 
 public class RenderingStage extends JComponent implements Runnable {
     private static final Color BACKGROUND = new Color(0xf0f0f0);
@@ -18,7 +19,7 @@ public class RenderingStage extends JComponent implements Runnable {
     private static Point2D.Double realPosition;
     private static Point position;
 
-    private static Scene scene;
+    private static LinkedList<Scene> sceneStack;
 
     private static double scale = 1.0;
 
@@ -29,13 +30,14 @@ public class RenderingStage extends JComponent implements Runnable {
         realPosition = new Point2D.Double();
         position = new Point();
 
-        Focusable.enable(this);
+        Focusable.enable(this, false);
 
         StageListener stageListener = new StageListener();
         addKeyListener(stageListener);
         addMouseWheelListener(stageListener);
 
-        scene = new GlobalScene();
+        sceneStack = new LinkedList<Scene>();
+        pushScene(new GlobalScene());
 
         new Thread(this).start();
     }
@@ -67,7 +69,7 @@ public class RenderingStage extends JComponent implements Runnable {
     }
 
     private void render(Graphics2D g) {
-        scene.render(g);
+        getScene().render(g);
 
         InstanceDraggingManager.renderDrag(g);
     }
@@ -90,8 +92,18 @@ public class RenderingStage extends JComponent implements Runnable {
         }
     }
 
-    public static void setScene(Scene scene) {
-        RenderingStage.scene = scene;
+    public static Scene getScene() {
+        return RenderingStage.sceneStack.getLast();
+    }
+
+    public static void pushScene(Scene scene) {
+        RenderingStage.sceneStack.add(scene);
+    }
+
+    public static void popScene() {
+        if (sceneStack.size() > 1) {
+            sceneStack.removeLast().save();
+        }
     }
 
     public static Point getRelativeMousePosition() {

@@ -33,6 +33,10 @@ public class StageListener implements KeyListener, MouseWheelListener {
 
                 break;
             }
+
+            case KeyEvent.VK_ESCAPE: {
+                RenderingStage.popScene();
+            }
         }
     }
 

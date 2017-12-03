@@ -1,5 +1,6 @@
 package editor.ui.parts.content.library.content;
 
+import editor.logic.stage.parts.scenes.StaticEntityScene;
 import editor.logic.types.assets.BehavioralEntityAsset;
 import editor.logic.types.assets.ImageAsset;
 import editor.logic.types.assets.StaticEntityAsset;
@@ -46,7 +47,7 @@ public class LibraryContent extends JTabbedPane {
             staticEntitiesFolder = ApplicationLibrary.createFolder(staticEntitiesFolder);
         }
 
-        staticEntityPane = new LibraryContentFolders<StaticEntityAsset>(staticEntitiesFolder, "sse");
+        staticEntityPane = new LibraryContentFolders<StaticEntityAsset>(staticEntitiesFolder, StaticEntityScene.EXTENSION);
         addTab("Static Entities", staticEntityPane);
 
         behavioralEntitiesFolder = new File(ApplicationLibrary.projectFolder, "behavioral_entities");
@@ -77,6 +78,14 @@ public class LibraryContent extends JTabbedPane {
 
     public static File getImageFolderLocation() {
         return imagePane.getActiveFolderLocation();
+    }
+
+    public static File getStaticEntityFolderLocation() {
+        return staticEntityPane.getActiveFolderLocation();
+    }
+
+    public static File getBehavioralEntityFolderLocation() {
+        return behavioralEntityPane.getActiveFolderLocation();
     }
 
     public static synchronized void scanLibrary() {

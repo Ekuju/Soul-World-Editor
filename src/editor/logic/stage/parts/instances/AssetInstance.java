@@ -15,10 +15,13 @@ public abstract class AssetInstance {
     private Point2D.Double scale;
     private Point2D.Double anchor;
 
+    private Color tint;
+
     public AssetInstance() {
         position = new Point();
         scale = new Point2D.Double(2.0, 2.0);
         anchor = new Point2D.Double(0.5, 0.5);
+        tint = Color.WHITE;
     }
 
     public Point getPosition() {
@@ -64,6 +67,17 @@ public abstract class AssetInstance {
 
     public int getScreenHeight() {
         return (int) Math.round(RenderingStage.getScale() * getWidth());
+    }
+
+    public Color getTint() {
+        return tint;
+    }
+
+    /**
+     * Sets the tint for a 1 time use that is reset back tom white after render.
+     */
+    public void tint(Color tint) {
+        this.tint = tint;
     }
 
     public abstract void render(Graphics2D g);

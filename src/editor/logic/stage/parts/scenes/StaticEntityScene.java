@@ -1,18 +1,17 @@
 package editor.logic.stage.parts.scenes;
 
+import editor.ui.parts.content.library.content.LibraryContent;
+
+import java.io.File;
+
 /**
  * Created by Trent on 11/29/2017.
  */
 public class StaticEntityScene extends Scene {
-    private static final String EXTENSION = "sse";
+    public static final String EXTENSION = "sse";
 
     public StaticEntityScene(String filename) {
         super(filename);
-    }
-
-    @Override
-    public void close() {
-
     }
 
     @Override
@@ -22,11 +21,16 @@ public class StaticEntityScene extends Scene {
 
     @Override
     public boolean acceptsStaticEntityAssets() {
-        return false;
+        return true;
     }
 
     @Override
     public String getExtension() {
         return EXTENSION;
+    }
+
+    @Override
+    public File getFile() {
+        return new File(LibraryContent.getStaticEntityFolderLocation(), getFileName() + "." + getExtension());
     }
 }
