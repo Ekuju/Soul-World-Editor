@@ -30,6 +30,10 @@ public abstract class Asset {
         return name;
     }
 
+    public void setAssetName(String name) {
+        this.name = name;
+    }
+
     public BufferedImage getPreviewImage(int maxWidth, int maxHeight) {
         BufferedImage image = getBufferedImage();
         int width = image.getWidth();
