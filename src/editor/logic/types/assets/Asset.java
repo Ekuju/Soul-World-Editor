@@ -58,6 +58,7 @@ public abstract class Asset {
     public String getChecksum() {
         return checksum;
     }
+
     public File getFile() {
         return file;
     }

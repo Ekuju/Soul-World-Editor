@@ -21,7 +21,6 @@ public class ApplicationFrame extends JFrame {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.getDefaults().put("TabbedPane.tabsOverlapBorder", false);
-
         } catch (Exception e) {
             e.printStackTrace();
         }

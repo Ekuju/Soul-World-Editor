@@ -1,6 +1,5 @@
 package editor.ui.parts.content.library;
 
-import com.sun.deploy.util.StringUtils;
 import editor.logic.Settings;
 import editor.ui.parts.content.library.buttons.LibraryControls;
 import editor.ui.parts.content.library.content.LibraryContent;

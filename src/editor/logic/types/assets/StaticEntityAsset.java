@@ -34,8 +34,8 @@ public class StaticEntityAsset extends Asset {
 
     @Override
     protected void generateBufferedImage() {
-        Point topLeft = new Point();
-        Point bottomRight = new Point();
+        Point topLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        Point bottomRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
 
         ArrayList<ImageAssetInstance> imageAssetInstances = new ArrayList<ImageAssetInstance>();
 
